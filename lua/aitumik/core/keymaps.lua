@@ -44,3 +44,26 @@ vim.keymap.set("n","<leader>s",[[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Le
 --vim.keymap.set("n","<leader>s",function()
 --    local word = vim.fn.expand("<cword>")
 -- end,{desc = "Substiture word under the cursor"})
+
+
+vim.api.nvim_create_autocmd("TextYankPost",{
+    desc = "Highlight when yanking text",
+    group = vim.api.nvim_create_augroup("kickstart-highlight-yank",{ clear = true}),
+    callback = function()
+        local regname = vim.v.event.regname
+        if regname == "" then regname = '"' end
+
+        local yanked = vim.fn.getreg(regname,1,true)
+        --print("yanked text : " .. table.concat(yanked,"\\n"))
+        
+        --print(string.format('event fired : %s',vim.inspect(vim.v.event)))
+        vim.highlight.on_yank()
+    end
+})
+
+--vim.api.nvim_create_autocmd({'BufEnter','BufWinEnter'},{
+--    pattern = {'*.c','*.py'},
+--    callback = function(ev)
+--        print(string.format('event fired : %s',vim.inspect(ev)))
+--    end
+--})
