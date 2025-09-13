@@ -28,5 +28,19 @@ vim.keymap.set("v","p",'"_dp',opts)
 
 vim.keymap.set({ "n", "v" },"<leader>d",[["_d]])
 
--- Dangling highlights are cleared
-vim.keymap.set("n","<C-c>",":nohls<CR>",{desc = "clears search highlights"})
+-- both work but I am used to the first one
+vim.keymap.set("n","<C-c>",":nohls<CR>",{desc = "clears search highlights",silent = true})
+--vim.keymap.set("n","<C-c>",":nohl<CR>",{desc = "clears search highlights",silent = true})
+
+
+-- Later for the LSP
+--vim.keymap.set("n","<leader>f",vim.lsp.buf.format)
+
+vim.keymap.set("n","x",'"_x',opts)
+
+vim.keymap.set("n","<leader>s",[[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
+
+-- TODO : implement modern lua syntax here
+--vim.keymap.set("n","<leader>s",function()
+--    local word = vim.fn.expand("<cword>")
+-- end,{desc = "Substiture word under the cursor"})
