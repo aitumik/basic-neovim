@@ -22,7 +22,7 @@ vim.opt.ignorecase = true
 vim.opt.smartcase = true
 
 vim.opt.termguicolors = true
-vim.cmd('colorscheme retrobox')
+--vim.cmd('colorscheme retrobox')
 vim.opt.background = "dark"
 
 --vim.opt.scrolloff = 8
