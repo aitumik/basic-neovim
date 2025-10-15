@@ -41,6 +41,8 @@ return {
 
 		local lspconfig = require("lspconfig")
 
+		local capabilities = require("cmp_nvim_lsp").default_capabilities()
+
 		-- Default keymaps for navigation
 		local on_attach = function(_, bufnr)
 			local opts = { buffer = bufnr, noremap = true, silent = true }
@@ -64,7 +66,7 @@ return {
 		-- Setup servers
 		local servers = { "ts_ls", "lua_ls", "pyright", "gopls" }
 		for _, server in ipairs(servers) do
-			local opts = { on_attach = on_attach }
+			local opts = { on_attach = on_attach, capabilities = capabilities }
 
 			if server == "gopls" then
 				opts.settings = {
