@@ -7,6 +7,29 @@ return {
 	config = function()
 		-- Setup Mason
 		require("mason").setup()
+
+		vim.diagnostic.config({
+			virtual_text = false,
+			signs = true,
+			underline = true,
+			update_in_insert = false,
+			severity_sort = true,
+			float = {
+				border = "rounded",
+				source = "always",
+				header = "",
+				prefix = "",
+			},
+		})
+
+		vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Show error under cursor" })
+
+		vim.api.nvim_create_autocmd("CursorHold", {
+			callback = function()
+				vim.diagnostic.open_float(nil, { focus = false })
+			end,
+		})
+
 		require("mason-lspconfig").setup({
 			ensure_installed = {
 				"ts_ls", -- TypeScript / JavaScript
@@ -28,14 +51,34 @@ return {
 			vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts) -- Signature help
 			vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts) -- Rename symbol
 			vim.keymap.set("n", "<C-o>", "<C-t>", opts) -- Jump back
+
+			-- Format on save (especially for Go auto-imports)
+			vim.api.nvim_create_autocmd("BufWritePre", {
+				buffer = bufnr,
+				callback = function()
+					vim.lsp.buf.format({ async = false })
+				end,
+			})
 		end
 
 		-- Setup servers
 		local servers = { "ts_ls", "lua_ls", "pyright", "gopls" }
 		for _, server in ipairs(servers) do
-			lspconfig[server].setup({
-				on_attach = on_attach,
-			})
+			local opts = { on_attach = on_attach }
+
+			if server == "gopls" then
+				opts.settings = {
+					gopls = {
+						analyses = {
+							unusedparams = true,
+						},
+						staticcheck = true,
+						gofumpt = true, -- use stricter formatting
+					},
+				}
+			end
+
+			lspconfig[server].setup(opts)
 		end
 	end,
 }
